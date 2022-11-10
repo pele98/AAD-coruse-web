@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { UserContext } from '../context/UserContext';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import logo from '../img/logo.svg';
+import { Link } from 'react-router-dom';
+
+import ButtonAsLink from './ButtonAsLink';
 
 const HeaderBar = styled.header`
   width: 100%;
@@ -20,11 +25,37 @@ const LogoText = styled.h1`
   display: inline;
 `;
 
+const UserState = styled.div`
+  margin-left: auto;
+`;
+
 const Header = () => {
+
+  const { loggedIn, setLoggedIn } = useContext(UserContext);
+  const navigate = useNavigate();
+
   return (
     <HeaderBar>
       <img src={logo} alt="Notedly Logo" height="40" />
       <LogoText>Notedly</LogoText>
+      <UserState>
+        {loggedIn ? (
+          <ButtonAsLink
+          onClick={() => {
+            localStorage.removeItem('token');
+            setLoggedIn(false);
+            navigate('/');
+          }}
+        >
+          Logout
+        </ButtonAsLink>
+        ) : (
+          <p>
+            <Link to={'/signin'}>Sign In</Link> or{' '}
+            <Link to={'/signup'}>Sign Up</Link>
+          </p>
+        )}
+      </UserState>
     </HeaderBar>
   );
 };

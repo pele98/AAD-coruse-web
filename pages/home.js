@@ -1,5 +1,5 @@
 import React from 'react';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, gql, useApolloClient } from '@apollo/client';
 
 import NoteFeed from '../components/NoteFeed.js';
 import Button from '../components/Button';
@@ -30,8 +30,6 @@ const Home = () => {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error!</p>;
-
-  console.log(data.noteFeed);
 
   return (
     <>
