@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { format } from 'date-fns';
 import styled from 'styled-components';
+import { UserContext } from '../context/UserContext';
+
+import NoteUser from './NoteUser';
 
 const StyledNote = styled.article`
   max-width: 800px;
@@ -19,11 +22,15 @@ const MetaInfo = styled.div`
   padding-right: 1em;
 `;
 
+
 const UserActions = styled.div`
   margin-left: auto;
 `;
 
 const Note = ({ note }) => {
+
+  const { loggedIn } = useContext(UserContext);
+
   return (
     <StyledNote>
       <MetaData>
@@ -38,9 +45,15 @@ const Note = ({ note }) => {
           <em>by</em> {note.author.username} <br />
           {format(new Date(note.createdAt), 'MMM-dd-yyyy')}
         </MetaInfo>
-        <UserActions>
-          <em>Favorites:</em> {note.favoriteCount}
-        </UserActions>
+        {loggedIn ? (
+          <UserActions>
+            <NoteUser note={note} />
+          </UserActions>
+        ) : (
+          <UserActions>
+            <em>Favorites:</em> {note.favoriteCount}
+          </UserActions>
+        )}
       </MetaData>
       <ReactMarkdown source={note.content} />
     </StyledNote>

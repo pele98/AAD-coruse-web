@@ -8,20 +8,34 @@ import Favorites from './favorites';
 import Layout from '../components/Layout';
 import NotePage from './note';
 import SignUp from './signup';
+import SignIn from './signin';
+import NewNote from './new';
+import EditNote from './edit';
 
-const Pages = props => {
+const Pages = () => {
 
-  const { loggedIn } = useContext(UserContext);
+  const { loggedIn, setRedirectBack } = useContext(UserContext);
+
+  const privateRoute = (route, signInAddress) => {
+    if (loggedIn) return route;
+    else {
+      setRedirectBack(true);
+      return <Navigate to={signInAddress} />;
+    }
+  }
 
   return (
     <BrowserRouter>
       <Layout>
         <Routes>
           <Route exact path="/" element={<Home/>} />
-          <Route path="mynotes" element={!loggedIn ? <Navigate to='../signup' />: <MyNotes/>} />
-          <Route path="favorites" element={!loggedIn ? <Navigate to='../signup' />: <Favorites/>} />
-          <Route path="note/:id" element={!loggedIn ? <Navigate to='../signup' />: <NotePage/>} />
+          <Route path="mynotes" element={privateRoute(<MyNotes/>, '../signin')} />
+          <Route path="favorites" element={privateRoute(<Favorites/>, '../signin')} />
+          <Route path="new" element={privateRoute(<NewNote/>, '../signin')} />
+          <Route path="edit/:id" element={privateRoute(<EditNote/>, '../signin')} />
+          <Route path="note/:id" element={<NotePage/>} />
           <Route path="signup" element={<SignUp/>} />
+          <Route path="signin" element={<SignIn/>} />
         </Routes>
       </ Layout>
     </BrowserRouter>
